@@ -15,13 +15,14 @@ public func configure(_ app: Application) async throws {
     else { fatalError("Failed to load JWKS Keypair file.") }
     try app.jwt.signers.use(jwksJSON: jwksString)
     
-    
+    // postgres configuration
+    let dbport = Environment.get("POSTGRES_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
-        hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-        port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
-        username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
-        password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
-        database: Environment.get("DATABASE_NAME") ?? "vapor_database",
+        hostname:   Environment.get("DATABASE_HOST") ?? "localhost",
+        port:       app.environment == .testing ? 5433 : dbport,
+        username:   Environment.get("DATABASE_USERNAME") ?? "vapor_username",
+        password:   Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
+        database:   Environment.get("DATABASE_NAME") ?? "vapor_database",
         tls: .prefer(try .init(configuration: .clientDefault)))
     ), as: .psql)
 
@@ -30,4 +31,17 @@ public func configure(_ app: Application) async throws {
     try migrations(app)
     // register routes
     try routes(app)
+    
+    // dev testing
+    switch app.environment {
+    case .testing:
+        app.logger.info("Environment: testing")
+        app.passwords.use(.plaintext)
+        try await app.autoMigrate()
+    case .development:
+        app.logger.info("Environment: development")
+        try await app.autoMigrate()
+    default:
+        break
+    }
 }
