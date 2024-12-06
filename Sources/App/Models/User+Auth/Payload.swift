@@ -8,14 +8,20 @@
 import Vapor
 import JWT
 
-/// The `access token` model sent to the frontend. Contains the `User` information for quicker access.
+/// The `access token` model sent to the frontend.  Not stored in the database.
 struct Payload: JWTPayload, Authenticatable {
-    /// The user
+    /// User ID
     var userID: UUID
+    
     var username: String
+    
     var fullName: String
+    
     var email: String
+    
     var isAdmin: Bool
+    
+    /// When this access token expires
     var exp: ExpirationClaim
     
     func verify(using signer: JWTSigner) throws {

@@ -102,7 +102,7 @@ extension User {
         
         
         /// Initial User table creation.
-        struct CreateSystemUser: AsyncMigration {
+        struct CreateUser: AsyncMigration {
             var app: Application
             
             /// Preloaded admin@admin.com with password "password"
@@ -122,7 +122,7 @@ extension User {
                     .field(User.V1.isReset,         .bool,      .required, .custom("DEFAULT FALSE"))
                     .field(User.V1.isActive,        .bool,      .required, .custom("DEFAULT FALSE"))
                 
-                    //.unique(on: User.V1.username,   name: User.V1.unique_username)
+                    .unique(on: User.V1.username,   name: User.V1.unique_username)
                     .unique(on: User.V1.email,      name: User.V1.unique_user_email)
                 
                     .create()
