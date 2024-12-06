@@ -56,8 +56,28 @@ final class User: Model {
     var isReset: Bool
     
     init() { }
+    
+    init(
+        username: String,
+        fullName: String,
+        email: String,
+        passwordHash: String,
+        isAdmin: Bool,
+        isActive: Bool,
+        isReset: Bool
+    ) {
+        self.username = username
+        self.fullName = fullName
+        self.email = email
+        self.passwordHash = passwordHash
+        self.isAdmin = isAdmin
+        self.isActive = isActive
+        self.isReset = isReset
+    }
 }
 
+
+// MARK: V1
 
 extension User {
     enum V1 {
@@ -107,7 +127,17 @@ extension User {
                 
                     .create()
             
+                // create a demo admin user on first migration
                 if app.environment != .testing {
+                    try await User(
+                        username: "admin",
+                        fullName: "Administrator",
+                        email: "admin@admin.com",
+                        passwordHash: try Bcrypt.hash("password"),
+                        isAdmin: true,
+                        isActive: true,
+                        isReset: false)
+                    .create(on: database)
                 }
             }
             
