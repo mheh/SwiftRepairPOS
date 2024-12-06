@@ -15,6 +15,7 @@ public func configure(_ app: Application) async throws {
     else { fatalError("Failed to load JWKS Keypair file.") }
     try app.jwt.signers.use(jwksJSON: jwksString)
     
+    
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
         port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? SQLPostgresConfiguration.ianaPortNumber,
@@ -24,6 +25,9 @@ public func configure(_ app: Application) async throws {
         tls: .prefer(try .init(configuration: .clientDefault)))
     ), as: .psql)
 
+    
+    // run migraitons
+    try migrations(app)
     // register routes
     try routes(app)
 }
