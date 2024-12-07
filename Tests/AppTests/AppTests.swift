@@ -20,12 +20,41 @@ struct AppTests {
         try await app.asyncShutdown()
     }
     
+    // Login without a user in the database
     @Test("Failed Login Route")
     func failedLogin() async throws {
         try await withApp { app in
-            try await app.test(.POST, "api/auth/login", afterResponse: { res async in
-                #expect(res.status == .badRequest)
-            })
+            let loginDTO = Auth_DTO.Login.Body(email: "noone@example.com", password: "12345")
+            
+            try await app.test(
+                .POST, "api/auth/login",
+                beforeRequest: { req in
+                    try req.content.encode(loginDTO)
+                },
+                afterResponse: { res async in
+                    #expect(res.status == .badRequest)
+                })
+        }
+    }
+    
+    // Create a user, try to login with credentials
+    @Test("Successful Login Route")
+    func successfulLogin() async throws {
+        try await withApp { app in
+            let loginDTO = Auth_DTO.Login.Body(email: "test@test.com", password: "test123")
+            let user = User(username: "test", fullName: "Test McGee",
+                            email: "test@test.com", passwordHash: "test123",
+                            isAdmin: true, isActive: true, isReset: false)
+            
+            try await user.create(on: app.db)
+            try await app.test(
+                .POST, "api/auth/login",
+                beforeRequest: { req in
+                    try req.content.encode(loginDTO)
+                },
+                afterResponse: { res async in
+                    #expect(res.status == .ok)
+                })
         }
     }
     
