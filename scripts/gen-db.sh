@@ -17,8 +17,13 @@ else
 fi
 
 docker run -d --name swift-repair-pos-test \
-  -e POSTGRES_USER=$(echo $DATABASE_USERNAME) -e POSTGRES_PASSWORD=$(echo $DATABASE_PASSWORD) \
+  -e POSTGRES_DB=$(echo $DATABASE_NAME) \
+  -e POSTGRES_USER=$(echo $DATABASE_USERNAME) \
+  -e POSTGRES_PASSWORD=$(echo $DATABASE_PASSWORD) \
   -p 5433:5432 postgres:latest -c log_statement=all
+  
 docker run -d --name swift-repair-pos \
-  -e POSTGRES_USER=$(echo $DATABASE_USERNAME) -e POSTGRES_PASSWORD=$(echo $DATABASE_PASSWORD) \
+  -e POSTGRES_DB=$(echo $DATABASE_NAME) \
+  -e POSTGRES_USER=$(echo $DATABASE_USERNAME) \
+  -e POSTGRES_PASSWORD=$(echo $DATABASE_PASSWORD) \
   -p 5432:5432 postgres:latest -c log_statement=all
