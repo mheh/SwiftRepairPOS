@@ -12,7 +12,7 @@ import Fluent
 
 /// The token sent with a `Payload` model to the user after a successful login attempt.
 /// This token allows the user to request a new `access token` after expiration.
-final class RefreshToken: Model {
+final class RefreshToken: Model, @unchecked Sendable {
     static let schema = RefreshToken.V1.schemaName
     
     @ID var id: UUID?

@@ -15,7 +15,7 @@ struct AuthController: RouteCollection {
             auth.post("login",              use: login)
             auth.post("refresh",            use: refreshToken)
             
-            // MARK: Authentication required
+            // auth required
             let protected = auth.grouped(
                 UserAuthenticator(),
                 Payload.guardMiddleware())
