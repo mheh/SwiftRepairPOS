@@ -9,9 +9,9 @@ struct AppTests {
         let app = try await Application.make(.testing)
         do {
             try await configure(app)
-            try await app.autoMigrate()   
+            try await app.autoMigrate()
             try await test(app)
-            try await app.autoRevert()   
+            try await app.autoRevert()
         }
         catch {
             try await app.asyncShutdown()
@@ -64,18 +64,13 @@ struct AppTests {
             let user = User(username: "test", fullName: "Test McGee",
                             email: "test@test.com", passwordHash: "test123",
                             isAdmin: true, isActive: true, isReset: false)
-            do {
-                try await user.create(on: app.db)
-            } catch {
-                print(String(reflecting: error))
-            }
-            let (refreshToken, accessToken) = try RefreshToken.newTokens(for: user, with: app)
+            try await user.create(on: app.db)
+            let (_, accessToken) = try RefreshToken.newTokens(for: user, with: app)
             try await app.test(
                 .GET, "api/users/current",
                 beforeRequest: { req in
                     let bearerAuth = BearerAuthorization(token: accessToken)
                     req.headers.bearerAuthorization = bearerAuth
-                    debugPrint(req.headers.bearerAuthorization)
                 },
                 afterResponse: { res async throws in
                     #expect(res.status == .ok)
@@ -93,24 +88,24 @@ struct AppTests {
 //            })
 //        }
 //    }
-//    
+//
 //    @Test("Getting all the Todos")
 //    func getAllTodos() async throws {
 //        try await withApp { app in
 //            let sampleTodos = [Todo(title: "sample1"), Todo(title: "sample2")]
 //            try await sampleTodos.create(on: app.db)
-//            
+//
 //            try await app.test(.GET, "todos", afterResponse: { res async throws in
 //                #expect(res.status == .ok)
 //                #expect(try res.content.decode([TodoDTO].self) == sampleTodos.map { $0.toDTO()} )
 //            })
 //        }
 //    }
-//    
+//
 //    @Test("Creating a Todo")
 //    func createTodo() async throws {
 //        let newDTO = TodoDTO(id: nil, title: "test")
-//        
+//
 //        try await withApp { app in
 //            try await app.test(.POST, "todos", beforeRequest: { req in
 //                try req.content.encode(newDTO)
@@ -122,14 +117,14 @@ struct AppTests {
 //            })
 //        }
 //    }
-//    
+//
 //    @Test("Deleting a Todo")
 //    func deleteTodo() async throws {
 //        let testTodos = [Todo(title: "test1"), Todo(title: "test2")]
-//        
+//
 //        try await withApp { app in
 //            try await testTodos.create(on: app.db)
-//            
+//
 //            try await app.test(.DELETE, "todos/\(testTodos[0].requireID())", afterResponse: { res async throws in
 //                #expect(res.status == .noContent)
 //                let model = try await Todo.find(testTodos[0].id, on: app.db)
