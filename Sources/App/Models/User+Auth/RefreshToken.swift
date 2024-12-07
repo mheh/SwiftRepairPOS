@@ -48,6 +48,15 @@ final class RefreshToken: Model, @unchecked Sendable {
         self.expiresAt = expiresAt
         self.issuedAt = issuedAt
     }
+    
+    /// Return a new `RefreshToken` and `accessToken` string
+    static func newTokens(for user: User, with app: Application) throws -> (RefreshToken, String) {
+        let token = app.random.generate(bits: 256)
+        let refreshToken = try RefreshToken(token: SHA256.hash(token), userID: user.requireID())
+        let payload = try Payload(user: user)
+        let accessToken = try app.jwt.signers.sign(payload)
+        return (refreshToken, accessToken)
+    }
 }
 
 // MARK: V1

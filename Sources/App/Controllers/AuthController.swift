@@ -52,11 +52,8 @@ struct AuthController: RouteCollection {
             .delete()
         
         // Create the refresh token
-        let token = req.random.generate(bits: 256)
-        let refreshToken = try RefreshToken(token: SHA256.hash(token), userID: user.requireID())
+        let (refreshToken, accessToken) = try RefreshToken.newTokens(for: user, with: req.application)
         try await refreshToken.create(on: req.db)
-        let payload = try Payload(user: user)
-        let accessToken = try req.jwt.sign(payload)
         
         // TODO: Implement login count and reset here
         
@@ -64,7 +61,7 @@ struct AuthController: RouteCollection {
             token: .init(
                 accessToken: accessToken,
                 accessExpiration: "\(Date().addingTimeInterval(CONSTANT_TOKEN_ACCESS_LIFETIME))",
-                refreshToken: token,
+                refreshToken: refreshToken.token,
                 refreshExpiration: "\(Date().addingTimeInterval(CONSTANT_TOKEN_REFRESH_LIFETIME))"
             ),
             user: try .init(from: user))

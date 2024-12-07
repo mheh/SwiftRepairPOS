@@ -76,7 +76,18 @@ final class User: Model, @unchecked Sendable {
     }
 }
 
-
+extension User_DTO.V1.Model {
+    init(with user: User) throws {
+        self.init(
+            id: try user.requireID(),
+            username: user.username,
+            fullname: user.fullName,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            isActive: user.isActive,
+            isReset: user.isReset)
+    }
+}
 // MARK: V1
 
 extension User {

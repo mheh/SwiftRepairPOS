@@ -58,6 +58,32 @@ struct AppTests {
         }
     }
     
+    @Test("Successful Protected Route access")
+    func successfulProtectedRoute() async throws {
+        try await withApp { app in
+            let user = User(username: "test", fullName: "Test McGee",
+                            email: "test@test.com", passwordHash: "test123",
+                            isAdmin: true, isActive: true, isReset: false)
+            do {
+                try await user.create(on: app.db)
+            } catch {
+                print(String(reflecting: error))
+            }
+            let (refreshToken, accessToken) = try RefreshToken.newTokens(for: user, with: app)
+            try await app.test(
+                .GET, "api/users/current",
+                beforeRequest: { req in
+                    let bearerAuth = BearerAuthorization(token: accessToken)
+                    req.headers.bearerAuthorization = bearerAuth
+                    debugPrint(req.headers.bearerAuthorization)
+                },
+                afterResponse: { res async throws in
+                    #expect(res.status == .ok)
+                    let userResp: User_DTO.V1.Model? = try res.content.decode(User_DTO.V1.Model.self)
+                    #expect(userResp != nil)
+                })
+        }
+    }
 //    @Test("Test Hello World Route")
 //    func helloWorld() async throws {
 //        try await withApp { app in
