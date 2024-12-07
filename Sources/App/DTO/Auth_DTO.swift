@@ -22,15 +22,12 @@ extension Auth_DTO {
         public var refreshToken: String
         /// Refresh token expiration date
         public var refreshTokenExpiration: String
-        /// The device ID for this token
-        public var deviceID: UUID
         
-        public init(accessToken: String, accessExpiration: String, refreshToken: String, refreshExpiration: String, deviceID: UUID) {
+        public init(accessToken: String, accessExpiration: String, refreshToken: String, refreshExpiration: String) {
             self.accessToken = accessToken
             self.accessTokenExpiration = accessExpiration
             self.refreshToken = refreshToken
             self.refreshTokenExpiration = refreshExpiration
-            self.deviceID = deviceID
         }
     }
 }
