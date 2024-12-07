@@ -31,6 +31,9 @@ public func configure(_ app: Application) async throws {
     try migrations(app)
     // register routes
     try routes(app)
+    // error middleware
+    app.middleware.use(ErrorMiddleware.custom(environment: app.environment))
+    
     
     // dev testing
     switch app.environment {

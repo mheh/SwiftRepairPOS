@@ -8,7 +8,7 @@ import Vapor
 import Fluent
 
 /// A user in the system. Can login, receive token, perform actions through protected routes.
-final class User: Model {
+final class User: Model, @unchecked Sendable {
     static let schema = User.V1.schemaName
     
     @ID(key: .id)
