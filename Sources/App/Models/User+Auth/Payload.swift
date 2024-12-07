@@ -10,7 +10,6 @@ import JWT
 
 /// The `access token` model sent to the frontend.  Not stored in the database.
 struct Payload: JWTPayload, Authenticatable {
-    /// User ID
     var userID: UUID
     
     var username: String
