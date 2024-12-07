@@ -8,22 +8,23 @@
 import Vapor
 import Fluent
 
+/// Endpoints for interaction with authentication
+///
+/// `http://localhost:8080/api/auth/`
 struct AuthController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         routes.group("auth") { auth in
-            
             auth.post("login",              use: login)
             auth.post("refresh",            use: refreshToken)
             
             // auth required
-            let protected = auth.grouped(
-                UserAuthenticator(),
-                Payload.guardMiddleware())
+            let protected = auth.grouped(UserAuthenticator(), Payload.guardMiddleware())
             protected.post("logout", use: logout)
         }
     }
     
     @Sendable private func login(_ req: Request) async throws -> Response {
+        
         throw Abort(.notImplemented)
     }
     
