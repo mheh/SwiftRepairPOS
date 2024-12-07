@@ -101,3 +101,7 @@ extension Request {
         self.application.random
     }
 }
+
+func services(_ app: Application) throws {
+    app.randomGenerators.use(.random)
+}

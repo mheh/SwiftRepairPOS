@@ -31,6 +31,8 @@ public func configure(_ app: Application) async throws {
     try migrations(app)
     // register routes
     try routes(app)
+    // register services
+    try services(app)
     // error middleware
     app.middleware.use(ErrorMiddleware.custom(environment: app.environment))
     
