@@ -13,7 +13,7 @@ func routes(_ app: Application) throws {
         try! api.register(collection: AuthController())
         
         // Payload protected routes
-        let protected = api.grouped(UserAuthenticator(), Payload.guardMiddleware())
+        // let protected = api.grouped(UserAuthenticator(), Payload.guardMiddleware())
         // try! protected.register(collection: ...)
     }
 }
