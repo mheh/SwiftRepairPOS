@@ -25,8 +25,8 @@ struct AuthController: RouteCollection {
     
     
     @Sendable private func login(_ req: Request) async throws -> Auth_DTO.Login.Response {
-        try Auth_DTO.Login.Body.validate(content: req)
         let loginRequest = try req.content.decode(Auth_DTO.Login.Body.self)
+        try Auth_DTO.Login.Body.validate(content: req)
         
         // Find user
         guard let user = try await User.query(on: req.db)

@@ -9,5 +9,11 @@ import Fluent
 import Vapor
 
 func routes(_ app: Application) throws {
-    try app.routes.register(collection: AuthController())
+    app.group("api") { api in
+        try! api.register(collection: AuthController())
+        
+        // Payload protected routes
+        let protected = api.grouped(UserAuthenticator(), Payload.guardMiddleware())
+        // try! protected.register(collection: ...)
+    }
 }
