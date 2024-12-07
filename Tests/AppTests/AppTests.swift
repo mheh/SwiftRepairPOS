@@ -79,6 +79,28 @@ struct AppTests {
                 })
         }
     }
+    
+    @Test("Failed protected route access")
+    func failedProtectedRoute() async throws {
+        try await withApp { app in
+            let user = User(username: "test", fullName: "Test McGee",
+                            email: "test@test.com", passwordHash: "test123",
+                            isAdmin: true, isActive: true, isReset: false)
+            try await user.create(on: app.db)
+            
+            try await app.test(
+                .GET, "api/users/current",
+                afterResponse: { res async throws in
+                    #expect(res.status == .unauthorized)
+                })
+        }
+    }
+    
+    @Test("Succesful refresh token operation")
+    func succesfulRefreshTokenRoute() async throws {
+        // operate with refresh token route
+        
+    }
 //    @Test("Test Hello World Route")
 //    func helloWorld() async throws {
 //        try await withApp { app in
