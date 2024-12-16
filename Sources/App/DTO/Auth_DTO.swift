@@ -81,35 +81,35 @@ extension Auth_DTO {
     }
 }
 
-//// MARK: - Refresh Request
-//extension Auth_DTO {
-//    /// Refresh Token Request
-//    public struct Refresh: MWRequestProtocol {
-//        public var path: String =                          "auth/refresh"
-//        public var urlQueryParams: [String : String] = [:]
-//        public var requestType: MWRequest_HTTPType =       .POST
-//        public var addAuthorizationToken: Bool =           false
-//        
-//        public var body: Encodable?
-//        public var response: Decodable.Type? =             Response.self
-//        
-//        public init (body: Body) {
-//            self.body = body
-//        }
-//        
-//        /// Refresh token request to server
-//        public struct Body: Codable {
-//            /// Refresh token to refresh
-//            public var refreshToken: String
-//            public var deviceID: UUID
-//            
-//            public init(refreshToken: String, deviceID: UUID) {
-//                self.refreshToken = refreshToken
-//                self.deviceID = deviceID
-//            }
-//        }
-//        
-//        /// Refresh token response from server
-//        public typealias Response = Token
-//    }
-//}
+// MARK: - Refresh Request
+extension Auth_DTO {
+    /// Refresh Token Request
+    public struct Refresh: DTORequestProtocol {
+        public var path: String =                          "auth/refresh"
+        public var urlQueryParams: [String : String] = [:]
+        public var requestType: DTORequest_HTTPType =       .POST
+        public var addAuthorizationToken: Bool =           false
+        
+        public var body: Encodable?
+        public var response: Decodable.Type? =             Response.self
+        
+        public init (body: Body) {
+            self.body = body
+        }
+        
+        /// Refresh token request to server
+        public struct Body: Codable {
+            /// Refresh token to refresh
+            public var refreshToken: String
+            public var deviceID: UUID
+            
+            public init(refreshToken: String, deviceID: UUID) {
+                self.refreshToken = refreshToken
+                self.deviceID = deviceID
+            }
+        }
+        
+        /// Refresh token response from server
+        public typealias Response = Token
+    }
+}
