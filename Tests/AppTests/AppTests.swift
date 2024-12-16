@@ -4,7 +4,7 @@ import Testing
 import Fluent
 
 @Suite("App Tests with DB", .serialized)
-struct AppTests {
+struct AuthenticationTests {
     private func withApp(_ test: (Application) async throws -> ()) async throws {
         let app = try await Application.make(.testing)
         do {
@@ -20,7 +20,9 @@ struct AppTests {
         try await app.asyncShutdown()
     }
     
-    // Login without a user in the database
+    // MARK: Login Requests
+    
+    // Attempt login with no existing user
     @Test("Failed Login Route")
     func failedLogin() async throws {
         try await withApp { app in
@@ -58,6 +60,9 @@ struct AppTests {
         }
     }
     
+    // MARK: Protected Route Requests
+    
+    // Create a user, create a token, try to access a protected route using bearer auth
     @Test("Successful Protected Route access")
     func successfulProtectedRoute() async throws {
         try await withApp { app in
@@ -80,6 +85,7 @@ struct AppTests {
         }
     }
     
+    // Create a user, create a token, try to access a protected route using bearer auth but fail.
     @Test("Failed protected route access")
     func failedProtectedRoute() async throws {
         try await withApp { app in
@@ -87,14 +93,20 @@ struct AppTests {
                             email: "test@test.com", passwordHash: "test123",
                             isAdmin: true, isActive: true, isReset: false)
             try await user.create(on: app.db)
+            let (_, accessToken) = try RefreshToken.newTokens(for: user, with: app)
             
             try await app.test(
                 .GET, "api/users/current",
+                beforeRequest: { req in
+                    let bearerAuth = BearerAuthorization(token: "2pWS6RQmdZpE0TQ93X")
+                },
                 afterResponse: { res async throws in
                     #expect(res.status == .unauthorized)
                 })
         }
     }
+    
+    // MARK: Token Requests
     
     @Test("Succesful refresh token operation")
     func succesfulRefreshTokenRoute() async throws {
