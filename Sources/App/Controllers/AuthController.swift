@@ -23,7 +23,7 @@ struct AuthController: RouteCollection {
         }
     }
     
-    
+    // Login to an existing user, return user and token
     @Sendable private func login(_ req: Request) async throws -> Auth_DTO.Login.Response {
         let loginRequest = try req.content.decode(Auth_DTO.Login.Body.self)
         try Auth_DTO.Login.Body.validate(content: req)
@@ -55,7 +55,7 @@ struct AuthController: RouteCollection {
         let (refreshToken, accessToken) = try RefreshToken.newTokens(for: user, with: req.application)
         try await refreshToken.create(on: req.db)
         
-        // TODO: Implement login count and reset here
+        // TODO: Implement login attempt count and reset here
         
         return Auth_DTO.Login.Response(
             token: .init(
@@ -64,10 +64,11 @@ struct AuthController: RouteCollection {
                 refreshToken: refreshToken.token,
                 refreshExpiration: "\(Date().addingTimeInterval(CONSTANT_TOKEN_REFRESH_LIFETIME))"
             ),
-            user: try .init(from: user))
+            user: try .init(from: user)
+        )
     }
     
-    
+    // Lookup a refresh token and return a new one if everything is valid
     @Sendable private func refreshToken(_ req: Request) async throws -> Auth_DTO.Token {
         let refreshRequest = try req.content.decode(Auth_DTO.Refresh.Body.self)
         let hashedRefreshToken = SHA256.hash(refreshRequest.refreshToken)
@@ -94,7 +95,8 @@ struct AuthController: RouteCollection {
             throw RefreshTokenError.refreshTokenOrUserNotFound
         }
         
-        // Delete lost, expired tokens
+        // Delete lost, expired tokens.
+        // This should be a job at some point
 //        try await RefreshToken.deleteExpired(for: user.requireID())
         
         // Verify credentials
