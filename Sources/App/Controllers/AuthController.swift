@@ -68,8 +68,53 @@ struct AuthController: RouteCollection {
     }
     
     
-    @Sendable private func refreshToken(_ req: Request) async throws -> Response {
-        throw Abort(.notImplemented)
+    @Sendable private func refreshToken(_ req: Request) async throws -> Auth_DTO.Token {
+        let refreshRequest = try req.content.decode(Auth_DTO.Refresh.Body.self)
+        let hashedRefreshToken = SHA256.hash(refreshRequest.refreshToken)
+        
+        // We got a hitbox, delete the token
+        guard let foundToken = try await RefreshToken.query(on: req.db)
+            .filter(\.$token == hashedRefreshToken)
+            .first()
+        else {
+            throw RefreshTokenError.refreshTokenOrUserNotFound
+        }
+        // if we find a token here delete it if something else goes wrong down the line
+        try await foundToken.delete(on: req.db)
+        
+        // Popcorn.gif
+        guard foundToken.expiresAt > Date()
+        else {
+            throw RefreshTokenError.refreshTokenHasExpired
+        }
+        
+        // Find the user
+        guard let user = try await User.find(foundToken.$user.id, on: req.db)
+        else {
+            throw RefreshTokenError.refreshTokenOrUserNotFound
+        }
+        
+        // Delete lost, expired tokens
+//        try await RefreshToken.deleteExpired(for: user.requireID())
+        
+        // Verify credentials
+        guard user.isActive else { throw UserError.userNotActive }
+        guard !user.isReset else { throw UserError.userIsReset }
+        
+        // New token
+        let token = req.random.generate(bits: 256)
+        let refreshToken = try RefreshToken(token: SHA256.hash(token), userID: user.requireID())
+        try await refreshToken.create(on: req.db)
+        let payload = try Payload(user: user)
+        let accessToken = try req.jwt.sign(payload)
+        
+        
+        return Auth_DTO.Token(
+            accessToken: accessToken,
+            accessExpiration: "\(Date().addingTimeInterval(CONSTANT_TOKEN_ACCESS_LIFETIME))",
+            refreshToken: token,
+            refreshExpiration: "\(Date().addingTimeInterval(CONSTANT_TOKEN_REFRESH_LIFETIME))"
+        )
     }
     
     
