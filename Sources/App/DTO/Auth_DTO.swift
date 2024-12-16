@@ -101,11 +101,9 @@ extension Auth_DTO {
         public struct Body: Codable {
             /// Refresh token to refresh
             public var refreshToken: String
-            public var deviceID: UUID
             
-            public init(refreshToken: String, deviceID: UUID) {
+            public init(refreshToken: String) {
                 self.refreshToken = refreshToken
-                self.deviceID = deviceID
             }
         }
         
