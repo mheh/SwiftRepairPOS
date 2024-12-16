@@ -93,12 +93,13 @@ struct AuthenticationTests {
                             email: "test@test.com", passwordHash: "test123",
                             isAdmin: true, isActive: true, isReset: false)
             try await user.create(on: app.db)
-            let (_, accessToken) = try RefreshToken.newTokens(for: user, with: app)
+            let (_, _) = try RefreshToken.newTokens(for: user, with: app)
             
             try await app.test(
                 .GET, "api/users/current",
                 beforeRequest: { req in
                     let bearerAuth = BearerAuthorization(token: "2pWS6RQmdZpE0TQ93X")
+                    req.headers.bearerAuthorization = bearerAuth
                 },
                 afterResponse: { res async throws in
                     #expect(res.status == .unauthorized)
@@ -116,9 +117,10 @@ struct AuthenticationTests {
                             isAdmin: true, isActive: true, isReset: false)
             try await user.create(on: app.db)
             let (refreshToken, accessToken) = try RefreshToken.newTokens(for: user, with: app)
+            try await refreshToken.create(on: app.db)
             
             try await app.test(
-                .GET, "api/auth/refresh",
+                .POST, "api/auth/refresh",
                 beforeRequest: { req in
                     let bearerAuth = BearerAuthorization(token: accessToken)
                     req.headers.bearerAuthorization = bearerAuth
@@ -127,6 +129,8 @@ struct AuthenticationTests {
                 },
                 afterResponse: { res async throws in
                     #expect(res.status == .ok)
+                    let body = try res.content.decode(Auth_DTO.Token.self)
+                    #expect(!body.accessToken.isEmpty)
                 })
         }
     }

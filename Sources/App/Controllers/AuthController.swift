@@ -71,11 +71,10 @@ struct AuthController: RouteCollection {
     // Lookup a refresh token and return a new one if everything is valid
     @Sendable private func refreshToken(_ req: Request) async throws -> Auth_DTO.Token {
         let refreshRequest = try req.content.decode(Auth_DTO.Refresh.Body.self)
-        let hashedRefreshToken = SHA256.hash(refreshRequest.refreshToken)
         
         // We got a hitbox, delete the token
         guard let foundToken = try await RefreshToken.query(on: req.db)
-            .filter(\.$token == hashedRefreshToken)
+            .filter(\.$token == refreshRequest.refreshToken)
             .first()
         else {
             throw RefreshTokenError.refreshTokenOrUserNotFound
