@@ -1,10 +1,3 @@
-//
-//  SHA256.swift
-//  SwiftRepairPOS
-//
-//  Created by Milo Hehmsoth on 12/6/24.
-//
-
 import Crypto
 import Foundation
 

@@ -1,9 +1,3 @@
-//
-//  Date.swift
-//  SwiftRepairPOS
-//
-//  Created by Milo Hehmsoth on 12/16/24.
-//
 import Foundation
 
 extension Date {
@@ -15,4 +9,14 @@ extension Date {
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
         return formatter.string(from: self)
     }
+}
+
+
+extension Date {
+    /// When an optional date fails to initialize, provide this date
+    func failedOptional() -> Date {
+        // Why force unwrap here :(
+        Calendar.current.date(from: DateComponents(year: 1970, month: 1, day: 1))!
+    }
+    
 }
