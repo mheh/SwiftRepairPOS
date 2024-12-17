@@ -1,5 +1,5 @@
 {
-  "originHash" : "3e6320ac39cfd2911d493928e3208d52eb11fb2fbf5129a93a462e8216cf04bf",
+  "originHash" : "791ce74e5d600d80f1f8a25176cc056200a69d232e2655c28c9b89e06d7c9b83",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -286,7 +286,7 @@
       "location" : "https://github.com/mheh/SwiftRepairPOS-DTO.git",
       "state" : {
         "branch" : "master",
-        "revision" : "c450972fcbaf4ee4222d9e0a6594e3542a2fc4f0"
+        "revision" : "b5895eba9eb9d36dc56c9a60a76da4eabc225741"
       }
     },
     {

@@ -78,6 +78,7 @@ extension User_DTO.V1.Model {
             username: user.username,
             fullname: user.fullName,
             email: user.email,
+            permissions: .init(), // FIXME: PLACEHOLDER BECAUSE NO PERMISSIONS IMPLEMENTED YET
             isAdmin: user.isAdmin,
             isActive: user.isActive,
             isReset: user.isReset)

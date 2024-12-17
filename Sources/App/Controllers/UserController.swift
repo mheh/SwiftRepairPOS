@@ -30,4 +30,4 @@ struct UserController: RouteCollection {
     
 }
 
-extension User_DTO.V1.Model: Content {}
+extension User_DTO.V1.Model: @retroactive Content {}

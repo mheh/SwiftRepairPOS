@@ -127,14 +127,14 @@ struct AuthController: RouteCollection {
 
 // MARK: DTO extensions
 
-extension Auth_DTO.Login.Body: Validatable {
+extension Auth_DTO.Login.Body: @retroactive Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("email",        as: String.self, is: .email)
         validations.add("password",     as: String.self, is: !.empty)
     }
 }
 
-extension Auth_DTO.Token: Validatable {
+extension Auth_DTO.Token: @retroactive Validatable {
     public static func validations(_ validations: inout Validations) {
         validations.add("accessToken",  as: String.self, is: !.empty)
         validations.add("refreshToken", as: String.self, is: !.empty)
@@ -142,9 +142,12 @@ extension Auth_DTO.Token: Validatable {
 }
 
 // conform to content
-extension Auth_DTO.Login.Body: Content {}
-extension Auth_DTO.Login.Response: Content {}
-extension Auth_DTO.Token: Content {}
+
+extension Auth_DTO.Login.Body: @retroactive Content {}
+
+extension Auth_DTO.Login.Response: @retroactive Content {}
+
+extension Auth_DTO.Token: @retroactive Content {}
 
 // initialize DTO with a given user
 extension User_DTO.V1.Model {
@@ -154,6 +157,7 @@ extension User_DTO.V1.Model {
             username: user.username,
             fullname: user.fullName,
             email: user.email,
+            permissions: .init(), // FIXME: PLACEHOLDER BECAUSE NO PERMISSIONS IMPLEMENTED YET
             isAdmin: user.isAdmin,
             isActive: user.isActive,
             isReset: user.isReset)
