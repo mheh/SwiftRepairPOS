@@ -1,5 +1,5 @@
 {
-  "originHash" : "eb19391fb8dd2598946077c1852bdf28fd04552a8b89ddf7aaff4f47229aed6c",
+  "originHash" : "3e6320ac39cfd2911d493928e3208d52eb11fb2fbf5129a93a462e8216cf04bf",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -83,6 +83,15 @@
       }
     },
     {
+      "identity" : "phonenumberkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/marmelroy/PhoneNumberKit.git",
+      "state" : {
+        "revision" : "c107075aa8d394be7aced273a46e944afe8b321b",
+        "version" : "3.8.0"
+      }
+    },
+    {
       "identity" : "postgres-kit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/postgres-kit.git",
@@ -96,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/postgres-nio.git",
       "state" : {
-        "revision" : "cd5318a01a1efcb1e0b3c82a0ce5c9fefaf1cb2d",
-        "version" : "1.22.1"
+        "revision" : "fd0e415a705c490499f983639b04f491a2ed9d99",
+        "version" : "1.23.0"
       }
     },
     {
@@ -141,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms.git",
       "state" : {
-        "revision" : "5c8bd186f48c16af0775972700626f0b74588278",
-        "version" : "1.0.2"
+        "revision" : "4c3ea81f81f0a25d0470188459c6d4bf20cf2f97",
+        "version" : "1.0.3"
       }
     },
     {
@@ -272,12 +281,21 @@
       }
     },
     {
+      "identity" : "swiftrepairpos-dto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mheh/SwiftRepairPOS-DTO.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "c450972fcbaf4ee4222d9e0a6594e3542a2fc4f0"
+      }
+    },
+    {
       "identity" : "vapor",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "3aeeb6fab5112fb10ce699b5a80207e5cf571c32",
-        "version" : "4.106.7"
+        "revision" : "e1002f35edf92e2a579580f2d1df92e01287c6c7",
+        "version" : "4.108.0"
       }
     },
     {

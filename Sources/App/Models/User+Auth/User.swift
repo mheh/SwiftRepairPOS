@@ -1,11 +1,6 @@
-//
-//  User.swift
-//  SwiftRepairPOS
-//
-//  Created by Milo Hehmsoth on 12/5/24.
-//
 import Vapor
 import Fluent
+import MWServerModels
 
 /// A user in the system. Can login, receive token, perform actions through protected routes.
 final class User: Model, @unchecked Sendable {

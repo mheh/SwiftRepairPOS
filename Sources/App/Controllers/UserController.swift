@@ -6,7 +6,7 @@
 //
 
 import Vapor
-
+import MWServerModels
 
 /// Endpoints to interact with `User` models
 ///
@@ -25,7 +25,7 @@ struct UserController: RouteCollection {
             throw Abort(.notFound)
         }
         
-        return try User_DTO.V1.Model(with: user)
+        return try User_DTO.V1.Model(from: user)
     }
     
 }

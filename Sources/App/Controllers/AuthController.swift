@@ -7,6 +7,7 @@
 
 import Vapor
 import Fluent
+import MWServerModels
 
 /// Endpoints for interaction with authentication
 ///
